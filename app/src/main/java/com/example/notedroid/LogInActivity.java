@@ -48,7 +48,6 @@ public class LogInActivity extends AppCompatActivity {
                             //updateUI(null);
                             // ...
                         }
-
                     }
                 });
     }
