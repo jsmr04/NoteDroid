@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">NoteDroid</string>
+    <string name="app_name">iNotes</string>
+
+    <string name="welcome_title">iNotes</string>
+    <string name="signup_title_btn">Sign up</string>
+    <string name="login_title_btn">Log in</string>
+
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
 </resources>
