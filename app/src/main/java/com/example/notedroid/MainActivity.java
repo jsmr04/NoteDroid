@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("note");
 
-        signUpBtn = (Button) findViewById(R.id.signup_button);
-        logInBtn = (Button) findViewById(R.id.login_button);
+        signUpBtn = (Button) findViewById(R.id.mainSignup_button);
+        logInBtn = (Button) findViewById(R.id.mainLogin_button);
 
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
