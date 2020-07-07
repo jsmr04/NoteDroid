@@ -102,7 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                     "User created successfully",
                                                     "OK",
                                                     null);
-
+                                            clearFields();
                                         }else{
                                             Log.w(TAG, "update profile:failure", task.getException());
                                             showMessage(getApplicationContext(),
@@ -208,6 +208,14 @@ public class SignUpActivity extends AppCompatActivity {
                 .setPositiveButton(positiveText, onClickListener)
                 .create()
                 .show();
+    }
+
+    public void clearFields(){
+        firstNameTextView.setText("");
+        lastNameTextView.setText("");
+        emailTextView.setText("");
+        passwordTextView.setText("");
+        confirmPasswordTextView.setText("");
     }
 
 }
