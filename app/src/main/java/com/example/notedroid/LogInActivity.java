@@ -36,6 +36,9 @@ public class LogInActivity extends AppCompatActivity {
         passwordTextView = findViewById(R.id.login_password);
         progressBar = findViewById(R.id.signin_progressBar);
 
+        emailTextView.setText("jsmr3620@gmail.com");
+        passwordTextView.setText("123456");
+
         mAuth = FirebaseAuth.getInstance();
 //        FirebaseUser currentUser = mAuth.getCurrentUser();
 //
@@ -69,6 +72,7 @@ public class LogInActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             stopProgress();
+                            storeUser(user.getEmail());
                             goToNotes();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -82,6 +86,10 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void storeUser(String user) {
+        Util.setPreference(this,"user", user);
     }
 
     private void goToNotes(){

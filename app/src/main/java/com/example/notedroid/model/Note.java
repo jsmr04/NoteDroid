@@ -7,7 +7,6 @@ public class Note {
     private String note;
     private String category;
     private String noteDate;
-    private String location;
     private String user;
 
     public Note(){
@@ -54,14 +53,6 @@ public class Note {
         this.noteDate = noteDate;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getUser() {
         return user;
     }
@@ -78,7 +69,6 @@ public class Note {
                 ", note='" + note + '\'' +
                 ", category='" + category + '\'' +
                 ", noteDate='" + noteDate + '\'' +
-                ", location='" + location + '\'' +
                 ", user='" + user + '\'' +
                 '}';
     }

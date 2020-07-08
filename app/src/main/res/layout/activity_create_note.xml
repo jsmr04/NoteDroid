@@ -25,14 +25,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/title"
+        android:inputType="text"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cNoteCategoryTextView"
-        android:autofillHints=""
-        android:inputType="text" />
+        app:layout_constraintTop_toBottomOf="@+id/cNoteCategoryTextView" />
 
     <EditText
         android:id="@+id/cNoteNoteTextView"
@@ -51,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cNoteTitleTextView" />
 
     <ImageView
-        android:id="@+id/playImageView"
+        android:id="@+id/cNotePlayImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
@@ -62,12 +64,12 @@
         app:srcCompat="@drawable/ic_baseline_play_circle_outline_24" />
 
     <ImageView
-        android:id="@+id/mapImageView"
+        android:id="@+id/cNoteMapImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toTopOf="@+id/cNoteTitleTextView"
-        app:layout_constraintEnd_toStartOf="@+id/playImageView"
+        app:layout_constraintEnd_toStartOf="@+id/cNotePlayImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_baseline_map_36" />
