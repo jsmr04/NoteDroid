@@ -11,4 +11,8 @@
     <string name="last_name">Last Name</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
+    <string name="category">Category</string>
+    <string name="note">Note</string>
+    <string name="title">Title</string>
+    <string name="type_your_note">Type your note</string>
 </resources>
