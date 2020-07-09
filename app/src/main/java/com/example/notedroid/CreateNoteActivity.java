@@ -1,10 +1,12 @@
 package com.example.notedroid;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,9 +14,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CreateNoteActivity extends AppCompatActivity {
@@ -32,22 +39,22 @@ public class CreateNoteActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 10;
     private final long MIN_TIME = 1000;
     private final float MIN_DISTANCE = 10;
-
     private TextView titleTextView;
     private TextView noteTextView;
     private TextView categoryTextView;
     private ImageView playImageView;
     private ImageView mapImageView;
-
     private FirebaseDatabase database;
     private DatabaseReference refNote;
     private DatabaseReference refLocation;
     private Note note;
     private com.example.notedroid.model.Location location;
-
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location currentLocation;
+    private ArrayList<String> items = new ArrayList<>();
+    private String category = "No Category";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,14 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_save_36);
+
+        categoryTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelectCategory();
+            }
+        });
+
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getCurrentLocation();
@@ -213,4 +228,80 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
+    private void showSelectCategory(){
+
+        TextView newCategoryTextView;
+        ImageView addCategory;
+        final Spinner categorySpinner;
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        View categoryLayout = LayoutInflater.from(this).inflate(R.layout.category_layout, null);
+
+        newCategoryTextView = categoryLayout.findViewById(R.id.categoryNewTextView);
+        categorySpinner = categoryLayout.findViewById(R.id.categorySpinner);
+        addCategory = categoryLayout.findViewById(R.id.addCatImageView);
+
+        //Lista de opciones
+        items.clear();
+        items.add("No Category");
+        items.add("School");
+        items.add("Recipe");
+        items.add("Gym");
+
+        for ( String cat:Util.getPreferences(this, "CAT_")){
+            items.add(cat);
+        }
+
+        //Adapter del spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                R.layout.category_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(adapter);
+
+        //Select new category
+        addCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                category = categorySpinner.getSelectedItem().toString();
+                categoryTextView.setText(category);
+                alertDialog.dismiss();
+            }
+        });
+
+        //Add new category
+        newCategoryTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddCategory();
+            }
+        });
+
+        alertDialog.setView(categoryLayout);
+        alertDialog.setCancelable(true);
+        alertDialog.show();
+    }
+
+    private void showAddCategory(){
+        final TextView addNewCatTextView;
+        ImageView addImageView;
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        View addCategoryLayout = LayoutInflater.from(this).inflate(R.layout.add_category_layout, null);
+
+        addNewCatTextView = addCategoryLayout.findViewById(R.id.addCatTextView);
+        addImageView = addCategoryLayout.findViewById(R.id.addCatImageView);
+
+        addImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                items.add(addNewCatTextView.getText().toString());
+                Util.setPreference(getApplicationContext(), "CAT_" + addNewCatTextView.getText().toString().trim(),addNewCatTextView.getText().toString());
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.setView(addCategoryLayout);
+        alertDialog.setCancelable(true);
+        alertDialog.show();
+    }
 }

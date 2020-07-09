@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">iNote</string>
 
-    <string name="welcome_title">iNotes</string>
+    <string name="welcome_title">iNote</string>
     <string name="signup_title_btn">Sign up</string>
     <string name="login_title_btn">Log in</string>
 
@@ -11,8 +11,10 @@
     <string name="last_name">Last Name</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
-    <string name="category">Category</string>
+    <string name="category">No Category</string>
     <string name="note">Note</string>
     <string name="title">Title</string>
     <string name="type_your_note">Type your note</string>
+    <string name="play">Play</string>
+    <string name="map">Map</string>
 </resources>

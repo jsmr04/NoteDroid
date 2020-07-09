@@ -14,8 +14,9 @@
         android:layout_marginTop="20dp"
         android:drawableStart="@drawable/ic_baseline_book_24"
         android:text="@string/category"
+        android:textColor="@android:color/holo_blue_light"
         android:textSize="18sp"
-        android:textStyle="bold"
+        android:inputType="textCapWords"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +29,8 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/title"
-        android:inputType="text"
+        android:inputType="text|textCapSentences"
+        android:textColor="@android:color/darker_gray"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +63,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_baseline_play_circle_outline_24" />
+        app:srcCompat="@drawable/ic_baseline_play_circle_outline_24"
+        android:contentDescription="@string/play" />
 
     <ImageView
         android:id="@+id/cNoteMapImageView"
@@ -72,7 +75,8 @@
         app:layout_constraintEnd_toStartOf="@+id/cNotePlayImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_baseline_map_36" />
+        app:srcCompat="@drawable/ic_baseline_map_36"
+        android:contentDescription="@string/map" />
 
     <!--    <com.google.android.material.bottomappbar.BottomAppBar-->
 <!--        android:id="@+id/bottomAppBar2"-->
