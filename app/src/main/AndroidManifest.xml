@@ -15,8 +15,8 @@
         <activity android:name=".CreateNoteActivity">
 
         </activity>
-        <activity android:name=".NotesActivity">
-
+        <activity android:name=".NotesActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity
             android:name=".LogInActivity"

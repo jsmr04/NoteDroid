@@ -55,7 +55,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     private ArrayList<String> items = new ArrayList<>();
     private String category = "No Category";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +80,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 showSelectCategory();
             }
         });
-
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getCurrentLocation();
@@ -224,7 +222,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             } else {
                 Log.d(TAG, "Location access denied");
             }
-
         }
     }
 
