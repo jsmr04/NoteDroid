@@ -54,7 +54,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 20;
     private static final int REQUEST_IMAGE_CAPTURE = 30;
     private static final int REQUEST_PHOTO_LIBRARY = 40;
-    static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int REQUEST_TAKE_PHOTO = 1;
     private final long MIN_TIME = 1000;
     private final float MIN_DISTANCE = 10;
     private TextView titleTextView;
@@ -779,5 +779,11 @@ public class CreateNoteActivity extends AppCompatActivity {
         alertDialog.setView(fullImageLayout);
         alertDialog.setCancelable(true);
         alertDialog.show();
+    }
+
+    public void showMap(View view){
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("LOCATIONS", locations);
+        startActivity(intent);
     }
 }
