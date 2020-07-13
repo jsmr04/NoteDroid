@@ -49,7 +49,7 @@
         android:gravity="start|top"
         android:hint="@string/type_your_note"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/images_recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cNoteTitleTextView" />
@@ -63,6 +63,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
+        android:onClick="playAudio"
         app:srcCompat="@drawable/ic_baseline_play_circle_outline_24"
         android:contentDescription="@string/play" />
 
@@ -77,6 +78,21 @@
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_baseline_map_36"
         android:contentDescription="@string/map" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/images_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        app:layout_constraintTop_toBottomOf="@+id/cNoteNoteTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <!--    <com.google.android.material.bottomappbar.BottomAppBar-->
 <!--        android:id="@+id/bottomAppBar2"-->

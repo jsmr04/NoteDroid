@@ -5,7 +5,7 @@ public class Media {
     private String id;
     private String noteId;
     private String type;
-    private String mediaName;
+    private String media;
 
     public Media() {
 
@@ -35,15 +35,13 @@ public class Media {
         this.type = type;
     }
 
-    public String getMediaName() {
-        return mediaName;
+    public String getMedia() {
+        return media;
     }
 
-    public void setMediaName(String mediaName) {
-        this.mediaName = mediaName;
+    public void setMedia(String media) {
+        this.media = media;
     }
-
-
 
 
 }

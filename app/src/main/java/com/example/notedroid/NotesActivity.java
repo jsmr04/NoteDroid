@@ -1,5 +1,6 @@
 package com.example.notedroid;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.notedroid.model.Note;
@@ -29,8 +31,8 @@ public class NotesActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Note> notes = new ArrayList<Note>();
     private DatabaseReference refNote;
-    private DatabaseReference refLocation;
     private FirebaseDatabase database;
+    private String user = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,10 @@ public class NotesActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.notes_recyclerview);
 
+        user = Util.getPreference(this, "user");
+
         database = FirebaseDatabase.getInstance();
         refNote = database.getReference("note");
-        refLocation = database.getReference("location");
 
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -73,17 +76,27 @@ public class NotesActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        //getNotesFromFirebase();
+        Log.d(TAG, "onPostResume: ");
+    }
+
     private void getNotesFromFirebase(){
         //Get data
         ValueEventListener noteListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-
+                notes.clear();
                 for (DataSnapshot noteSnapshot: dataSnapshot.getChildren()) {
                     Note note = noteSnapshot.getValue(Note.class);
-                    notes.add(note);
-                    Log.d(TAG, "note: " + noteSnapshot.getKey() + " Detail: " + note.toString());
+
+                    if(note.getUser().equals(user)) {
+                        notes.add(note);
+                        Log.d(TAG, "note: " + noteSnapshot.getKey() + " Detail: " + note.toString());
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 //Log.d(TAG, "onDataChange: " + dataSnapshot.getKey() + " Note: " + note.getTitle());
@@ -99,4 +112,8 @@ public class NotesActivity extends AppCompatActivity {
         };
         refNote.addValueEventListener(noteListener);
     }
+
+
+    //
+    
 }

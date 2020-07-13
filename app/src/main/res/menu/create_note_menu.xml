@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--    <item-->
+<!--        android:id="@+id/createNote_picture"-->
+<!--        android:icon="@drawable/ic_baseline_camera_alt_36"-->
+<!--        android:title="Picture"-->
+<!--        app:showAsAction="ifRoom"/>-->
+<!--    <item-->
+<!--        android:id="@+id/createNote_audio"-->
+<!--        android:icon="@drawable/ic_baseline_mic_none_36"-->
+<!--        android:title="Audio"-->
+<!--        app:showAsAction="ifRoom"/>-->
+<!--    <item-->
+<!--        android:id="@+id/createNote_location"-->
+<!--        android:icon="@drawable/ic_baseline_location_on_36"-->
+<!--        android:title="Map"-->
+<!--        app:showAsAction="ifRoom"/>-->
     <item
-        android:id="@+id/createNote_picture"
-        android:icon="@drawable/ic_baseline_camera_alt_36"
-        android:title="Picture"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/createNote_audio"
-        android:icon="@drawable/ic_baseline_mic_none_36"
-        android:title="Audio"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/createNote_location"
-        android:icon="@drawable/ic_baseline_location_on_36"
-        android:title="Map"
+        android:id="@+id/createNote_attachments"
+        android:icon="@drawable/ic_baseline_attach_file_36"
+        android:title="Attachments"
         app:showAsAction="ifRoom"/>
 </menu>

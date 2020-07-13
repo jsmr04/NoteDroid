@@ -17,4 +17,5 @@
     <string name="type_your_note">Type your note</string>
     <string name="play">Play</string>
     <string name="map">Map</string>
+    <string name="image_note">Image Note</string>
 </resources>
