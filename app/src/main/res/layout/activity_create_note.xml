@@ -76,6 +76,7 @@
         app:layout_constraintEnd_toStartOf="@+id/cNotePlayImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
+        android:onClick="showMap"
         app:srcCompat="@drawable/ic_baseline_map_36"
         android:contentDescription="@string/map" />
 

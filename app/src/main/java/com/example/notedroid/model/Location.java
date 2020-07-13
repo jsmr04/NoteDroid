@@ -1,6 +1,8 @@
 package com.example.notedroid.model;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable {
     private String id;
     private String noteId;
     private String location;

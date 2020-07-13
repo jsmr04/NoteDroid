@@ -18,9 +18,11 @@
 
     <TextView
         android:id="@+id/attachRecord_TextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:paddingStart="20dp"
         android:layout_height="24dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:text="Record Audio"
         android:gravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,9 +42,11 @@
 
     <TextView
         android:id="@+id/attachLibrary_TextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:paddingStart="20dp"
         android:layout_height="24dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:text="Photo Library"
         android:gravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,9 +66,11 @@
 
     <TextView
         android:id="@+id/attachTakePhoto_TextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:paddingStart="20dp"
         android:layout_height="24dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:text="Take a Photo"
         android:gravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,9 +92,11 @@
 
     <TextView
         android:id="@+id/attachLocation_TextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:paddingStart="20dp"
         android:layout_height="24dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:gravity="bottom"
         android:text="Get Location"
