@@ -3,6 +3,8 @@ package com.example.notedroid;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ArrayAdapter;
@@ -92,7 +95,8 @@ public class CreateNoteActivity extends AppCompatActivity {
     private ArrayList<Bitmap> images = new ArrayList<>();
     private ArrayList<com.example.notedroid.model.Location> locations = new ArrayList<>();
     private int mode = -1;
-    private String editNoteId = "";
+    private ConstraintLayout rootLayout;
+    private boolean hiddenKeyboard = true;
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
@@ -118,6 +122,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         playImageView = findViewById(R.id.cNotePlayImageView);
         mapImageView = findViewById(R.id.cNoteMapImageView);
         recyclerView = findViewById(R.id.images_recyclerView);
+        rootLayout = findViewById(R.id.cNote_Layout);
 
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -157,6 +162,44 @@ public class CreateNoteActivity extends AppCompatActivity {
         if (mode == NOTE_MODE_CREATE) {
             getCurrentLocation();
         }
+
+        rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) recyclerView.getLayoutParams();
+                double heightDiff =  Double.valueOf(rootLayout.getHeight()) / Double.valueOf(rootLayout.getRootView().getHeight());
+                double heightAllowed = 0.60;
+
+                Log.d(TAG, "onGlobalLayout: " + rootLayout.getRootView().getHeight());
+                Log.d(TAG, "onGlobalLayout: " + rootLayout.getHeight());
+                Log.d(TAG, "onGlobalLayout: Dif " + heightDiff);
+                Log.d(TAG, "onGlobalLayout: Allowed " + heightAllowed);
+
+                if (heightDiff < heightAllowed) {
+                    Log.e(TAG, "keyboard opened");
+
+                    if (hiddenKeyboard) {
+                        layoutParams.height = 1;
+                        recyclerView.setLayoutParams(layoutParams);
+                        hiddenKeyboard = false;
+                    }
+
+                } else {
+                    Log.e(TAG, "keyboard closed");
+
+                    if (!hiddenKeyboard) {
+                        layoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+                        recyclerView.setLayoutParams(layoutParams);
+                        hiddenKeyboard = true;
+                    }
+//                    recyclerView.setVisibility(View.VISIBLE);
+//                    ConstraintSet constraintSet = new ConstraintSet();
+//                    constraintSet.clone(rootLayout);
+//                    constraintSet.connect(R.id.cNoteNoteTextView,ConstraintSet.BOTTOM,R.id.images_recyclerView,ConstraintSet.TOP,0);
+//                    constraintSet.applyTo(rootLayout);
+                }
+            }
+        });
     }
 
     private void fillFields() {
