@@ -125,7 +125,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_save_36);
+        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_save_36);
 
         categoryTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,7 +269,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         Log.d(TAG, "onSupportNavigateUp");
-        createNoteInFirebase();
+        finish();
 
         return true;
     }
@@ -607,10 +607,12 @@ public class CreateNoteActivity extends AppCompatActivity {
             case R.id.createNote_share:
                 shareNote();
                 return true;
+            case  R.id.createNote_save:
+                createNoteInFirebase();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     private void shareNote(){
@@ -623,14 +625,13 @@ public class CreateNoteActivity extends AppCompatActivity {
                 + noteTextView.getText().toString();
 
         intent.setType("text/plain");
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "iNote - " + titleTextView.getText().toString() );
         intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
 
-        startActivity(Intent.createChooser(intent, "Share"));
+        startActivity(Intent.createChooser(intent, "Choose"));
     }
 
     private void showImagePicker() {
-
         if (permissionToCamera) {
             Intent takePicture = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
