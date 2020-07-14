@@ -38,8 +38,12 @@ import com.example.notedroid.model.Media;
 import com.example.notedroid.model.Note;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -49,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class CreateNoteActivity extends AppCompatActivity {
+    public static final int NOTE_MODE_CREATE = 0;
+    public static final int NOTE_MODE_EDIT = 1;
     private static final String TAG = "NoteDroid";
     private static final int REQUEST_CODE = 10;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 20;
@@ -72,6 +78,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private Location currentLocation;
     private ArrayList<String> items = new ArrayList<>();
     private ArrayList<Media> medias = new ArrayList<>();
+    private ArrayList<String> removedImages = new ArrayList<>();
     private String category = "No Category";
     private static String fileName = null;
     private MediaRecorder recorder = null;
@@ -83,6 +90,8 @@ public class CreateNoteActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Bitmap> images = new ArrayList<>();
     private ArrayList<com.example.notedroid.model.Location> locations = new ArrayList<>();
+    private int mode = -1;
+    private String editNoteId = "";
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
@@ -126,11 +135,95 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         setupRecyclerView();
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if (bundle.containsKey("NOTE")) {
+                note = (Note) bundle.getSerializable("NOTE");
+                Log.d(TAG, "onCreate NOTE: " + note.getTitle());
+            }
+
+            if (bundle.containsKey("MODE")) {
+                mode = bundle.getInt("MODE");
+                Log.d(TAG, "onCreate MODE: " + mode);
+            }
+        }
+
+        if (mode == NOTE_MODE_EDIT) {
+            fillFields();
+        }
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        getCurrentLocation();
+        if (mode == NOTE_MODE_CREATE) {
+            getCurrentLocation();
+        }
     }
 
-    private void setupRecyclerView(){
+    private void fillFields() {
+        if (note != null) {
+            titleTextView.setText(note.getTitle());
+            noteTextView.setText(note.getNote());
+            categoryTextView.setText(note.getCategory());
+        }
+
+        //Getting media
+        Query mediaQuery = refMedia;
+        Log.d(TAG, "note id: " + note.getId());
+        mediaQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                medias.clear();
+                images.clear();
+                for (DataSnapshot mediaSnapshot : snapshot.getChildren()) {
+                    Media media = mediaSnapshot.getValue(Media.class);
+
+                    if (media != null && media.getNoteId().equals(note.getId())) {
+                        medias.add(media);
+                        if (media.getType().equals("IMAGE")) {
+                            images.add(Util.stringToBitMap(media.getMedia()));
+                        }
+
+                        Log.d(TAG, "onDataChange: " + media.getId());
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled: " + error);
+            }
+        });
+
+        //Getting Location
+        Query locationQuery = refLocation;
+        Log.d(TAG, "note id: " + note.getId());
+        locationQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                locations.clear();
+                for (DataSnapshot locationSnapshot : snapshot.getChildren()) {
+                    com.example.notedroid.model.Location location
+                            = locationSnapshot.getValue(com.example.notedroid.model.Location.class);
+
+                    if (location != null && location.getNoteId().equals(note.getId())) {
+                        locations.add(location);
+                        Log.d(TAG, "onDataChange: " + location.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled: " + error);
+            }
+        });
+
+//        mediaQuery.
+//        refMedia.addValueEventListener(noteListener);
+
+    }
+
+    private void setupRecyclerView() {
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         recyclerView.setLayoutAnimation(animation);
@@ -180,27 +273,34 @@ public class CreateNoteActivity extends AppCompatActivity {
         return true;
     }
 
-    private void removeImage(int index){
+    private void removeImage(int index) {
         //Delete image
         images.remove(index);
         int i = 0;
+        int removeIndex = 0;
         boolean delete = false;
 
         //Delete image from media
-        for (Media m : medias){
-            if (m.getType() == "IMAGE"){
-                if (i == index){
+        for (Media m : medias) {
+            if (m.getType().equals("IMAGE")) {
+                if (i == index) {
                     delete = true;
                     break;
                 }
                 i++;
             }
+            removeIndex++;
         }
 
         if (delete) {
-            medias.remove(i);
+            //Getting id
+            if (!medias.get(removeIndex).getId().equals("")) {
+                Log.d(TAG, "removeImage: " + medias.get(removeIndex).getType());
+                Log.d(TAG, "removeImage: " + medias.get(removeIndex).getId());
+                removedImages.add(medias.get(removeIndex).getId());
+            }
+            medias.remove(removeIndex);
         }
-
         adapter.notifyDataSetChanged();
     }
 
@@ -219,7 +319,14 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         if (noteText != "") {
             //Create Note
-            String key = refNote.child("note").push().getKey();
+            String key = "";
+            if (mode == NOTE_MODE_EDIT) {
+                if (note != null) {
+                    key = note.getId();
+                }
+            } else if (mode == NOTE_MODE_CREATE) {
+                key = refNote.child("note").push().getKey();
+            }
             Log.d(TAG, "KEY: " + key);
 
             note = new Note();
@@ -235,7 +342,9 @@ public class CreateNoteActivity extends AppCompatActivity {
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "onSuccess");
                     storeLocation();
+                    deleteMedia();
                     storeMedia();
+                    finish();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -248,18 +357,22 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void storeMedia() {
-        for (Media media : medias){
-            if (media.getNoteId().equals("")){
-                //Add new media
-                //Relation to note
+        for (Media media : medias) {
+            //Add new media
+            //Relation to note
+            if (media.getId().equals("") || media.getType().equals("AUDIO")) {
                 media.setNoteId(note.getId());
+                if (mode == NOTE_MODE_CREATE || media.getId().equals("")) {
+                    media.setId(refMedia.child("media").push().getKey());
+                }
+
                 Log.d(TAG, "storeMedia: " + media.getId());
                 refMedia.child(media.getId()).setValue(media).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "onSuccess");
                         Toast.makeText(getApplicationContext(), "Media saved successfully", Toast.LENGTH_LONG).show();
-                        finish();
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -267,33 +380,48 @@ public class CreateNoteActivity extends AppCompatActivity {
                         Log.d(TAG, "onFailure");
                     }
                 });
-
-            }else{
-                //Edit existing media
             }
+        }
+
+    }
+
+    private void deleteMedia(){
+        //TODO: Add delete media
+        for (final String mediaId : removedImages) {
+            refMedia.child(mediaId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "onSuccess - Remove" + mediaId);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure");
+                }
+            });
         }
     }
 
     private void storeLocation() {
-        for (com.example.notedroid.model.Location loc : locations){
-            //
-            if (loc.getNoteId().equals("")){
+        for (com.example.notedroid.model.Location loc : locations) {
+            if (loc.getId().equals("")) {
+                loc.setId(refLocation.child("location").push().getKey());
                 loc.setNoteId(note.getId());
-                refLocation.child(loc.getId()).setValue(loc).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess");
-                        Toast.makeText(getApplicationContext(), "Location saved successfully", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure");
-                    }
-                });
-            }else{
 
+                    loc.setNoteId(note.getId());
+                    refLocation.child(loc.getId()).setValue(loc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess");
+                            Toast.makeText(getApplicationContext(), "Location saved successfully", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure");
+                        }
+                    });
             }
         }
     }
@@ -310,8 +438,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 com.example.notedroid.model.Location currentLocation;
                 currentLocation = new com.example.notedroid.model.Location();
 
-                String key = refLocation.child("location").push().getKey();
-                currentLocation.setId(key);
+                currentLocation.setId("");
                 currentLocation.setNoteId("");
                 currentLocation.setLocation(CreateNoteActivity.this.currentLocation.getLatitude() + "," + CreateNoteActivity.this.currentLocation.getLongitude());
                 locations.add(currentLocation);
@@ -363,7 +490,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE){
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
             permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             showImagePicker();
 
@@ -383,9 +510,9 @@ public class CreateNoteActivity extends AppCompatActivity {
         Log.d(TAG, "setupCamera: WRITE_EXTERNAL_STORAGE: " + checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE));
 
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, imagePermissions, REQUEST_IMAGE_CAPTURE);
-        }else{
+        } else {
             permissionToCamera = true;
         }
 
@@ -482,7 +609,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     }
 
-    private void showImagePicker(){
+    private void showImagePicker() {
 
         if (permissionToCamera) {
             Intent takePicture = new Intent(Intent.ACTION_PICK,
@@ -493,6 +620,8 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void showAudioRecorder() {
+        permissionToRecordAccepted = ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+
         if (permissionToRecordAccepted) {
             ImageView playStopImageView;
             final ImageView addAudioImageView;
@@ -548,9 +677,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                     } else {
                         //Add new audio
                         Media media = new Media();
-                        String key = refMedia.child("media").push().getKey();
 
-                        media.setId(key);
+                        media.setId("");
                         media.setType("AUDIO");
                         media.setMedia(base64Audio);
                         media.setNoteId("");
@@ -606,10 +734,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
-    public int getAudioIndex(){
+    public int getAudioIndex() {
         int mediaIndex = 0;
-        for (Media media : medias){
-            if (media.getType().equals("AUDIO")){
+        for (Media media : medias) {
+            if (media.getType().equals("AUDIO")) {
                 return mediaIndex;
             }
             mediaIndex++;
@@ -649,7 +777,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        }else if (requestCode == REQUEST_PHOTO_LIBRARY && resultCode == RESULT_OK){
+        } else if (requestCode == REQUEST_PHOTO_LIBRARY && resultCode == RESULT_OK) {
             Uri photoUri = data.getData();
             if (photoUri != null) {
                 try {
@@ -663,7 +791,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void addImage(Bitmap bitmap){
+    private void addImage(Bitmap bitmap) {
         images.add(bitmap);
 
         //Add new image
@@ -671,8 +799,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         Media media = new Media();
 
-        String key = refMedia.child("media").push().getKey();
-        media.setId(key);
+        media.setId("");
         media.setType("IMAGE");
         media.setMedia(base64Image);
         media.setNoteId("");
@@ -687,7 +814,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void showPhotoLibrary(){
+    private void showPhotoLibrary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
         if (galleryIntent.resolveActivity(getPackageManager()) != null) {
@@ -695,7 +822,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void showAttachments(){
+    private void showAttachments() {
         TextView recordTextView;
         TextView libraryTextView;
         TextView takePhotoTextView;
@@ -757,7 +884,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void showMessage(String title, String message, String positiveText, DialogInterface.OnClickListener onClickListener){
+    public void showMessage(String title, String message, String positiveText, DialogInterface.OnClickListener onClickListener) {
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
@@ -767,7 +894,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void showImage(int index){
+    public void showImage(int index) {
         ImageView imageView;
 
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -781,7 +908,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void showMap(View view){
+    public void showMap(View view) {
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra("LOCATIONS", locations);
         startActivity(intent);
