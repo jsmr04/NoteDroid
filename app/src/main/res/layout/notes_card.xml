@@ -34,7 +34,7 @@
             android:layout_marginStart="7dp"
             android:text="data name"
             android:textColor="#FFF"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/noteDate_TextView"
@@ -42,9 +42,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="7dp"
+            android:layout_marginBottom="7dp"
             android:text="2020-07-03 09:30:00"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
