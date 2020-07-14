@@ -1,13 +1,20 @@
 package com.example.notedroid;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+
+import com.example.notedroid.Adapter.CategoryAdapter;
+import com.example.notedroid.Adapter.NoteAdapter;
+import com.example.notedroid.model.CategoryNotes;
 import com.example.notedroid.model.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -15,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class NotesActivity extends AppCompatActivity {
@@ -27,6 +35,8 @@ public class NotesActivity extends AppCompatActivity {
     private ArrayList<Note> notes = new ArrayList<Note>();
     private DatabaseReference refNote;
     private FirebaseDatabase database;
+    private ArrayList<String> categories = new ArrayList<String>();
+    private ArrayList<CategoryNotes> categoryNotes = new ArrayList<CategoryNotes>();
     private String user = "";
 
     @Override
@@ -113,6 +123,12 @@ public class NotesActivity extends AppCompatActivity {
                         Log.d(TAG, "note: " + noteSnapshot.getKey() + " Detail: " + note.toString());
                     }
                 }
+                startCategoryNotes();
+
+                for (CategoryNotes c : categoryNotes){
+                    Log.d(TAG, "onCreate: " + c.getCategoryName());
+                }
+
                 adapter.notifyDataSetChanged();
                 //Log.d(TAG, "onDataChange: " + dataSnapshot.getKey() + " Note: " + note.getTitle());
                 // ...
@@ -127,5 +143,44 @@ public class NotesActivity extends AppCompatActivity {
         };
         refNote.addValueEventListener(noteListener);
     }
+
+    private void startCategoryNotes(){
+        startCategories();
+        Log.d("Cat", categories.toString());
+        categoryNotes.clear();
+        for(int x=0;x<categories.size();x++){
+            CategoryNotes cn = new CategoryNotes();
+            for(int y=0; y<notes.size();y++){
+                if(categories.get(x).equals(notes.get(y).getCategory())){
+                    cn.getNotes().add(notes.get(y));
+                }
+            }
+            cn.setCategoryName(categories.get(x));
+            Log.d(TAG, "startCategoryNotes: " + categories.get(x));
+            categoryNotes.add(cn);
+        }
+    }
+
+    private void startCategories(){
+        for (int x=0; x<notes.size();x++){
+            if (checkCategories(notes.get(x).getCategory())){
+                categories.add(notes.get(x).getCategory());
+            }
+        }
+        Log.d("Cat", categories.toString());
+    }
+
+    private boolean checkCategories(String cat){
+        if (categories.isEmpty()){return true;}
+        for(int i=0;i<categories.size();i++) {
+            if (categories.get(i).equals(cat)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    //
 
 }

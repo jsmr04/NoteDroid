@@ -1,4 +1,4 @@
-package com.example.notedroid;
+package com.example.notedroid.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,9 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notedroid.R;
 import com.example.notedroid.model.Note;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     private ArrayList<Note> dataset;
@@ -21,10 +23,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private ImageView noteImageView;
         private TextView titleTextView;
-        private TextView noteTextView;
         private TextView dateTextView;
-        private ImageView shareImageView;
-        private ImageView playImageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -32,10 +31,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
             noteImageView = itemView.findViewById(R.id.note_ImageView);
             titleTextView = itemView.findViewById(R.id.noteTitle_TextView);
-            noteTextView = itemView.findViewById(R.id.noteText_TextView);
             dateTextView = itemView.findViewById(R.id.noteDate_TextView);
-            shareImageView = itemView.findViewById(R.id.noteShare_ImageView);
-            playImageView = itemView.findViewById(R.id.notePlay_ImageView);
+
         }
     }
 
@@ -43,29 +40,30 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         this.dataset = dataset;
     }
 
+
     @NonNull
+    @Override
+    public void onBindViewHolder(@NonNull NoteAdapter.ViewHolder holder, int position) {
+       holder.noteImageView.setImageResource(R.drawable.welcome_background);
+       holder.titleTextView.setText(dataset.get(position).getTitle());
+       holder.dateTextView.setText(dataset.get(position).getNoteDate());
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataset.size();
+    }
+
     @Override
     public NoteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view;
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.note_card_row, parent, false);
+        view = inflater.inflate(R.layout.notes_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
-    }
 
-    @Override
-    public void onBindViewHolder(@NonNull NoteAdapter.ViewHolder holder, int position) {
-        //holder.noteImageView
-        holder.titleTextView.setText(dataset.get(position).getTitle());
-        holder.noteTextView.setText(dataset.get(position).getNote());
-        holder.dateTextView.setText(dataset.get(position).getNoteDate());
-    }
-
-    @Override
-    public int getItemCount() {
-        return this.dataset.size();
     }
 }

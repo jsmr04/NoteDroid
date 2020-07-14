@@ -1,4 +1,4 @@
-package com.example.notedroid;
+package com.example.notedroid.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.notedroid.R;
 
 import java.util.ArrayList;
 
@@ -20,11 +22,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setClickable(true);
-            imageView = itemView.findViewById(R.id.cNote_ImageView);
+            //imageView = itemView.findViewById(R.id.note_ImageView);
         }
     }
 
-    ImageAdapter(ArrayList<Bitmap> dataset){
+    public ImageAdapter(ArrayList<Bitmap> dataset){
         this.dataset = dataset;
     }
 
@@ -35,7 +37,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         View view;
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.image_card_row, parent, false);
+        view = inflater.inflate(R.layout.notes_card, parent, false);
         ImageAdapter.ViewHolder viewHolder = new ImageAdapter.ViewHolder(view);
 
         return viewHolder;

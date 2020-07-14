@@ -34,6 +34,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.notedroid.Adapter.ImageAdapter;
 import com.example.notedroid.model.Media;
 import com.example.notedroid.model.Note;
 import com.google.android.gms.tasks.OnFailureListener;
