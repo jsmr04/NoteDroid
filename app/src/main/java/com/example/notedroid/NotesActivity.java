@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -34,7 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class NotesActivity extends AppCompatActivity {
+public class NotesActivity extends AppCompatActivity{
     private static final String TAG = "NoteDroid";
     private FloatingActionButton fab;
     private Toolbar toolbar;
@@ -53,7 +56,7 @@ public class NotesActivity extends AppCompatActivity {
     private Context context;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
 
@@ -91,6 +94,7 @@ public class NotesActivity extends AppCompatActivity {
                 addNewNote();
             }
         });
+
     }
 
     private void setupRecyclerView(){
@@ -119,18 +123,6 @@ public class NotesActivity extends AppCompatActivity {
                             }
                             Log.d("media", "mediaNoteViewHolderout: " + m.getNoteId() + " NoteID: " + notes.get(positionNote).getId() + " MediaType: " + m.getType());
                         }
-//                        final String finalImage = image;
-//                        new Thread(new Runnable() {
-//                            public void run() {
-//                                final Bitmap bit;
-//                                bit = Util.stringToBitMap(finalImage);
-//                                noteViewHolder.noteImageView.post( new Runnable() {
-//                                    public void run() {
-//                                        noteViewHolder.noteImageView.setImageBitmap(bit);
-//                                    }
-//                                });
-//                            }
-//                        }).start();
                         if (image == null){
                             noteViewHolder.noteImageView.setImageResource(R.mipmap.note_img);
                         }else{
@@ -144,10 +136,25 @@ public class NotesActivity extends AppCompatActivity {
                         noteViewHolder.NoteInterfaceClick(new NoteOnClickInterface() {
                             @Override
                             public void onClick(View view, boolean isLongPressed) {
-                                Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
-                                intent.putExtra("NOTE", notes.get(positionN));
-                                intent.putExtra("MODE", CreateNoteActivity.NOTE_MODE_EDIT);
-                                startActivity(intent);
+                                Log.d(TAG, "onLongClick: OnClick " + isLongPressed);
+                                if (!isLongPressed){
+                                    Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
+                                    intent.putExtra("NOTE", notes.get(positionN));
+                                    intent.putExtra("MODE", CreateNoteActivity.NOTE_MODE_EDIT);
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onLongClick(View view, boolean isLongPressed) {
+                                Log.d(TAG, "onLongClick: NotesActivity :" + isLongPressed);
+                                if(isLongPressed){
+
+                                    noteViewHolder.titleTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+                                }else{
+                                    noteViewHolder.titleTextView.setTextColor(Color.WHITE);
+                                }
+
                             }
                         });
                     }
@@ -313,7 +320,6 @@ public class NotesActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     //
 

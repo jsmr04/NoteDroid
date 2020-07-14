@@ -1,5 +1,6 @@
 package com.example.notedroid.Adapter;
 
+import android.util.Log;
 import android.view.View;;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,16 +11,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.notedroid.Interface.NoteOnClickInterface;
 import com.example.notedroid.R;
 
+import static android.content.ContentValues.TAG;
 
-public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
     public ImageView noteImageView;
     public TextView titleTextView;
     public TextView dateTextView;
     public NoteOnClickInterface noteOnClickInterface;
+    boolean isLongPress = false;
 
     public NoteViewHolder(@NonNull View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
+        itemView.setOnLongClickListener(this);
 
         noteImageView = itemView.findViewById(R.id.note_ImageView);
         titleTextView = itemView.findViewById(R.id.noteTitle_TextView);
@@ -27,6 +32,25 @@ public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     }
     @Override
-    public void onClick(View v) { noteOnClickInterface.onClick(v,false);}
-    public void NoteInterfaceClick(NoteOnClickInterface noteOnClickInterface) { this.noteOnClickInterface = noteOnClickInterface; }
+    public void onClick(View v) { noteOnClickInterface.onClick(v, isLongPress);}
+
+    public void NoteInterfaceClick(NoteOnClickInterface noteOnClickInterface) {
+        this.noteOnClickInterface = noteOnClickInterface;
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if (isLongPress){
+            noteOnClickInterface.onLongClick(view, false);
+            isLongPress = false;
+            Log.d(TAG, "onLongClick: false");
+            return isLongPress;
+        }else{
+            noteOnClickInterface.onLongClick(view, true);
+            isLongPress = true;
+            Log.d(TAG, "onLongClick: true");
+            return isLongPress;
+        }
+
+    }
 }
