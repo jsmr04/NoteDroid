@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 //import com.example.notedroid.Adapter.CategoryAdapter;
 import com.example.notedroid.Adapter.CategoryViewHolder;
@@ -37,6 +38,7 @@ public class NotesActivity extends AppCompatActivity {
     private static final String TAG = "NoteDroid";
     private FloatingActionButton fab;
     private Toolbar toolbar;
+    private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter, adapterNotes;
     private RecyclerView.LayoutManager layoutManager;
@@ -58,6 +60,7 @@ public class NotesActivity extends AppCompatActivity {
         fab = findViewById(R.id.addNoteFAB);
         toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.notes_recyclerview);
+        progressBar = findViewById(R.id.notes_progressBar);
 
         user = Util.getPreference(this, "user");
 
@@ -104,10 +107,12 @@ public class NotesActivity extends AppCompatActivity {
                     @Override
                     public void onBindViewHolder(@NonNull final NoteViewHolder noteViewHolder,  int positionNote) {
                         String image = null;
-                        Log.d("media", "mediaNote: " + medias.size());
+                        Log.d("media", "mediaNote: " +  medias.size());
                         Log.d("media", "mediaNotePosition: " + positionNote);
+                        Log.d(TAG, "media: " + notes.get(positionNote).getTitle());
+
                         for (Media m : medias){
-                            if (m.getNoteId().equals(notes.get(positionNote).getId())){
+                            if (m.getType().equals("IMAGE") && m.getNoteId().equals(notes.get(positionNote).getId())){
                                 Log.d("media", "mediaNoteViewHolderin: " + m.getMedia());
                                 //image = Util.stringToBitMap(m.getMedia());
                                 image = m.getMedia();
@@ -127,7 +132,7 @@ public class NotesActivity extends AppCompatActivity {
 //                            }
 //                        }).start();
                         if (image == null){
-                            noteViewHolder.noteImageView.setImageResource(R.drawable.welcome_background);
+                            noteViewHolder.noteImageView.setImageResource(R.mipmap.note_img);
                         }else{
                             Bitmap bit;
                             bit = Util.stringToBitMap(image);
@@ -199,6 +204,8 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void getNotesFromFirebase(){
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setActivated(true);
         //Get data
         ValueEventListener noteListener = new ValueEventListener() {
             @Override
@@ -213,7 +220,7 @@ public class NotesActivity extends AppCompatActivity {
                         Log.d(TAG, "note: " + noteSnapshot.getKey() + " Detail: " + note.toString());
                     }
                 }
-                getMediaFromFirebase();
+
                 startCategoryNotes();
 
                 for (CategoryNotes c : categoryNotes){
@@ -221,6 +228,7 @@ public class NotesActivity extends AppCompatActivity {
 
                 }
 
+                getMediaFromFirebase();
                 adapter.notifyDataSetChanged();
                 //Log.d(TAG, "onDataChange: " + dataSnapshot.getKey() + " Note: " + note.getTitle());
                 // ...
@@ -251,10 +259,15 @@ public class NotesActivity extends AppCompatActivity {
                         Log.d(TAG, "onDataChangeMedia: " + media.getId());
                     }
                 }
+                adapter.notifyDataSetChanged();
+                adapterNotes.notifyDataSetChanged();
+
+                progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setActivated(false);
 //                for (Media m : medias){
 //                    Log.d(TAG, "onCreate: " + m.getMedia());
 //                }
-                adapterNotes.notifyDataSetChanged();
+
             }
 
             @Override
@@ -273,11 +286,6 @@ public class NotesActivity extends AppCompatActivity {
             for(int y=0; y<notes.size();y++){
                 if(categories.get(x).equals(notes.get(y).getCategory())){
                     cn.getNotes().add(notes.get(y));
-                    for (int z=0;z<medias.size();z++){
-                        if (notes.get(y).getId().equals(medias.get(z).getId())){
-                            cn.getMedias().add(medias.get(z));
-                        }
-                    }
                 }
             }
             cn.setCategoryName(categories.get(x));

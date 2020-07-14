@@ -46,4 +46,13 @@
         app:fabSize="normal"
         android:backgroundTint="@color/colorPrimary"
         android:src="@drawable/ic_baseline_add_24"/>
+
+    <ProgressBar
+        android:id="@+id/notes_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="138dp"
+        android:layout_height="113dp"
+        android:visibility="invisible"
+        android:layout_gravity="center" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
