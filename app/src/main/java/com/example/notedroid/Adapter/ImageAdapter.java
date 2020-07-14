@@ -22,7 +22,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setClickable(true);
-            //imageView = itemView.findViewById(R.id.note_ImageView);
+            imageView = itemView.findViewById(R.id.note_ImageView);
         }
     }
 

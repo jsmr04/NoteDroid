@@ -34,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.notedroid.Adapter.ImageAdapter;
 import com.example.notedroid.model.Media;
 import com.example.notedroid.model.Note;
@@ -605,10 +604,29 @@ public class CreateNoteActivity extends AppCompatActivity {
             case R.id.createNote_attachments:
                 showAttachments();
                 return true;
+            case R.id.createNote_share:
+                shareNote();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    private void shareNote(){
+        /*Create an ACTION_SEND Intent*/
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+
+        //Creating content to share
+        String shareBody = "Title: " + titleTextView.getText().toString() + "\n"
+                + "Category: " + categoryTextView.getText().toString() + "\n"
+                + noteTextView.getText().toString();
+
+        intent.setType("text/plain");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+
+        startActivity(Intent.createChooser(intent, "Share"));
     }
 
     private void showImagePicker() {

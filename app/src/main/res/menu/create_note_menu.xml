@@ -16,6 +16,13 @@
 <!--        android:icon="@drawable/ic_baseline_location_on_36"-->
 <!--        android:title="Map"-->
 <!--        app:showAsAction="ifRoom"/>-->
+
+    <item
+        android:id="@+id/createNote_share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="Share"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/createNote_attachments"
         android:icon="@drawable/ic_baseline_attach_file_36"
