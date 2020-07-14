@@ -53,9 +53,13 @@ public class NotesActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         refNote = database.getReference("note");
 
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new NoteAdapter(notes);
+        //Log.d("Cat", this.notes.get(0).toString());
+
+
+
+        adapter = new CategoryAdapter(categoryNotes);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {

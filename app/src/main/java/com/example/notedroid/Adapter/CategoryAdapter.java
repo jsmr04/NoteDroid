@@ -38,6 +38,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
     public CategoryAdapter(ArrayList<CategoryNotes> categoryNotes){
         this.cn = categoryNotes;
+        Log.d("NotesCategory", cn.toString());
     }
 
 
