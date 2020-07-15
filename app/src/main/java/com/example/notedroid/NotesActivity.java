@@ -14,10 +14,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 //import com.example.notedroid.Adapter.CategoryAdapter;
 import com.example.notedroid.Adapter.CategoryViewHolder;
@@ -26,7 +30,12 @@ import com.example.notedroid.Interface.NoteOnClickInterface;
 import com.example.notedroid.model.CategoryNotes;
 import com.example.notedroid.model.Media;
 import com.example.notedroid.model.Note;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.zip.Inflater;
 
 public class NotesActivity extends AppCompatActivity{
     private static final String TAG = "NoteDroid";
@@ -54,6 +64,7 @@ public class NotesActivity extends AppCompatActivity{
     private ArrayList<CategoryNotes> categoryNotes = new ArrayList<CategoryNotes>();
     private String user = "";
     private Context context;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -66,7 +77,9 @@ public class NotesActivity extends AppCompatActivity{
         progressBar = findViewById(R.id.notes_progressBar);
 
         user = Util.getPreference(this, "user");
+        Log.d(TAG, "onCreate User: " + user);
 
+        mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         refNote = database.getReference("note");
         refMedia = database.getReference("media");
@@ -267,7 +280,10 @@ public class NotesActivity extends AppCompatActivity{
                     }
                 }
                 adapter.notifyDataSetChanged();
-                adapterNotes.notifyDataSetChanged();
+
+                if (adapterNotes != null) {
+                    adapterNotes.notifyDataSetChanged();
+                }
 
                 progressBar.setVisibility(View.INVISIBLE);
                 progressBar.setActivated(false);
@@ -319,6 +335,41 @@ public class NotesActivity extends AppCompatActivity{
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.notes_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.notes_sign_out:
+                mAuth.signOut();
+                GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions
+                        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
+                 GoogleSignIn.getClient(this, googleSignInOptions).signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                     @Override
+                     public void onComplete(@NonNull Task<Void> task) {
+                         Log.d(TAG, "onOptionsItemSelected: Sign Out");
+                         Toast.makeText(getApplicationContext(), "Sign out", Toast.LENGTH_SHORT).show();
+                         finish();
+                     }
+                 });
+
+                return true;
+            default:
+        }
+        return false;
     }
 
     //

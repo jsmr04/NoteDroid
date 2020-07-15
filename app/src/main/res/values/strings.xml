@@ -3,7 +3,7 @@
 
     <string name="welcome_title">iNote</string>
     <string name="signup_title_btn">Sign up</string>
-    <string name="login_title_btn">Log in</string>
+    <string name="login_title_btn">Sign in</string>
 
     <string name="email">Email</string>
     <string name="confirm_password">Confirm Password</string>

@@ -38,6 +38,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_email" />
 
+
+    <Button
+        android:id="@+id/google_SingInButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"
+        android:textAllCaps="false"
+        android:text="Sign in with Google"
+        android:textSize="18sp"
+        android:background="@drawable/round_shape_btn_google"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/or_TextView">
+
+    </Button>
+
+    <TextView
+        android:id="@+id/or_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="~ OR ~"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/google_SingInButton"
+        app:layout_constraintTop_toBottomOf="@+id/signinBottomGuideline"
+        >
+
+    </TextView>
+
     <Button
         android:id="@+id/login_page_btn"
         style="@style/Widget.AppCompat.Button.Borderless"
@@ -53,7 +88,8 @@
         android:onClick="signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/signinBottomGuideline" />
+        app:layout_constraintBottom_toTopOf="@+id/signinBottomGuideline"
+         />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/signinTopGuideline"
@@ -67,7 +103,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.7" />
 
     <ProgressBar
         android:id="@+id/signin_progressBar"

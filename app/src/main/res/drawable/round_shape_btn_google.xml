@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <layer-list>
+        <item>
+
+            <shape android:tint="#FFF5F6F6">
+                <corners android:radius="20dp" />
+            </shape>
+        </item>
+<!--        <item>-->
+<!--            <bitmap android:gravity="bottom|left"-->
+<!--                android:src="@drawable/btn_google_signin_light_normal_mdpi" />-->
+<!--        </item>-->
+    </layer-list>
+</item>
+
+</selector>
