@@ -164,19 +164,21 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void FirebaseGoogleAuth(GoogleSignInAccount acc) {
-        AuthCredential authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
-        mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    storeUser(user.getEmail());
-                    goToNotes();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Google Sign In Failed", Toast.LENGTH_SHORT).show();
+        if (acc != null) {
+            AuthCredential authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
+            mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        storeUser(user.getEmail());
+                        goToNotes();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Google Sign In Failed", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
