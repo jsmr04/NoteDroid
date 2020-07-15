@@ -47,13 +47,13 @@ public class NotesActivity extends AppCompatActivity{
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter, adapterNotes;
     private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<Note> notes = new ArrayList<Note>();
+    private ArrayList<Note> notes = new ArrayList<>();
     private DatabaseReference refNote, refMedia;
     private FirebaseDatabase database;
     private ArrayList<Media> medias = new ArrayList<>();
     private ArrayList<Bitmap> images = new ArrayList<>();
-    private ArrayList<String> categories = new ArrayList<String>();
-    private ArrayList<CategoryNotes> categoryNotes = new ArrayList<CategoryNotes>();
+    private ArrayList<String> categories = new ArrayList<>();
+    private ArrayList<CategoryNotes> categoryNotes = new ArrayList<>();
     private String user = "";
     private Context context;
     private int selected = 0;
@@ -170,7 +170,7 @@ public class NotesActivity extends AppCompatActivity{
                                             @Override
                                             public void onClick(View view) {
                                                 Log.d(TAG, "onClick: DeleteButtonPressed");
-                                                deleteNote(notes.get(positionN).getId(), notes.get(positionN).getCategory());
+                                                deleteNote(notes.get(positionN).getId());
                                             }
                                         });
                                         //noteForDeletion = notes.get(positionN);
@@ -196,9 +196,8 @@ public class NotesActivity extends AppCompatActivity{
 
                         LayoutInflater inflater = LayoutInflater.from(context);
                         view = inflater.inflate(R.layout.notes_card, parent, false);
-                        NoteViewHolder viewHolder = new NoteViewHolder(view);
 
-                        return viewHolder;
+                        return new NoteViewHolder(view);
                     }
                     @Override
                     public int getItemCount() {
@@ -214,9 +213,8 @@ public class NotesActivity extends AppCompatActivity{
                 context = parent.getContext();
                 View v1 = LayoutInflater.from(context)
                         .inflate(R.layout.category_card,parent,false);
-                CategoryViewHolder viewHolder = new CategoryViewHolder(v1);
 
-                return viewHolder;
+                return new CategoryViewHolder(v1);
             }
             @Override
             public int getItemCount() {
@@ -227,29 +225,9 @@ public class NotesActivity extends AppCompatActivity{
         recyclerView.setAdapter(adapter);
     }
 
-    private void deleteNote(final String noteId, String category){
-//        boolean removed = false;
-//        CategoryNotes removeCN = null;
-//        for (CategoryNotes cn : categoryNotes){
-//            if(cn.getCategoryName().equals(category)){
-//                for(Note n : cn.getNotes()){
-//                    if(n.getId().equals(noteId)){
-//                        cn.getNotes().remove(n);
-//                        if(cn.getNotes().isEmpty()){
-//                            removeCN = cn;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        if(removeCN != null){
-//            int position = categoryNotes.indexOf(removeCN);
-//            Log.d(TAG, "deleteNote: itemPosition " + position);
-//            categoryNotes.remove(removeCN);
-//            adapter.notifyItemRemoved(position);
-//            Log.d(TAG, "deleteNote: Category Removed - Size: " + categoryNotes.size());
-//            removed = true;
-//        }
+
+
+    private void deleteNote(final String noteId){
 
         Log.d(TAG, "deleteNote: DeleteButtonPressed" + noteId);
 
@@ -284,8 +262,6 @@ public class NotesActivity extends AppCompatActivity{
             Log.d(TAG, "deleteNote: Name: " + c.getCategoryName());
             Log.d(TAG, "deleteNote: Notes: " + c.getNotes().size());
         }
-
-        //return removed;
     }
 
     private void addNewNote(){
