@@ -2,6 +2,7 @@ package com.example.notedroid.Adapter;
 
 import android.util.Log;
 import android.view.View;;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,8 +17,10 @@ import static android.content.ContentValues.TAG;
 
 public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
     public ImageView noteImageView;
+    public ImageButton deleteIcon;
     public TextView titleTextView;
     public TextView dateTextView;
+    public View noteView;
     public NoteOnClickInterface noteOnClickInterface;
     boolean isLongPress = false;
 
@@ -29,6 +32,8 @@ public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         noteImageView = itemView.findViewById(R.id.note_ImageView);
         titleTextView = itemView.findViewById(R.id.noteTitle_TextView);
         dateTextView = itemView.findViewById(R.id.noteDate_TextView);
+        deleteIcon = itemView.findViewById(R.id.imageButtonDelete);
+        noteView = itemView.findViewById(R.id.noteViewGradient);
 
     }
     @Override

@@ -20,6 +20,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
         <View
+            android:id="@+id/noteViewGradient"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/gradient"
@@ -48,14 +49,14 @@
             android:textSize="14sp" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButtonDelete"
             android:layout_width="30dp"
             android:layout_height="32dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="6dp"
-
+            android:visibility="invisible"
             app:srcCompat="@drawable/ic_baseline_close_16" />
 
     </RelativeLayout>
