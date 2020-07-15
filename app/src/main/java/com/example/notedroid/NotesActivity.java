@@ -26,6 +26,8 @@ import com.example.notedroid.Interface.NoteOnClickInterface;
 import com.example.notedroid.model.CategoryNotes;
 import com.example.notedroid.model.Media;
 import com.example.notedroid.model.Note;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +56,9 @@ public class NotesActivity extends AppCompatActivity{
     private ArrayList<CategoryNotes> categoryNotes = new ArrayList<CategoryNotes>();
     private String user = "";
     private Context context;
+    private int selected = 0;
+    private boolean longSelected = false;
+    private Note noteForDeletion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -75,6 +80,9 @@ public class NotesActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemViewCacheSize(20);
         //Log.d("Cat", this.notes.get(0).toString());
+
+        //recyclerView.on
+
 
         setupRecyclerView();
 
@@ -133,26 +141,48 @@ public class NotesActivity extends AppCompatActivity{
                         noteViewHolder.titleTextView.setText(notes.get(positionNote).getTitle());
                         noteViewHolder.dateTextView.setText(notes.get(positionNote).getNoteDate());
                         final int positionN = positionNote;
+
                         noteViewHolder.NoteInterfaceClick(new NoteOnClickInterface() {
                             @Override
                             public void onClick(View view, boolean isLongPressed) {
                                 Log.d(TAG, "onLongClick: OnClick " + isLongPressed);
-                                if (!isLongPressed){
+                                if (!isLongPressed && !longSelected){
                                     Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
                                     intent.putExtra("NOTE", notes.get(positionN));
                                     intent.putExtra("MODE", CreateNoteActivity.NOTE_MODE_EDIT);
                                     startActivity(intent);
+                                }else{
+                                    longSelected = false;
                                 }
                             }
 
                             @Override
                             public void onLongClick(View view, boolean isLongPressed) {
                                 Log.d(TAG, "onLongClick: NotesActivity :" + isLongPressed);
-                                if(isLongPressed){
 
-                                    noteViewHolder.titleTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+                                if(isLongPressed){
+                                    if(selected == 0) {
+                                        noteViewHolder.titleTextView.setTextColor(Color.RED);
+                                        noteViewHolder.dateTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        noteViewHolder.noteView.setVisibility(View.INVISIBLE);
+                                        noteViewHolder.deleteIcon.setVisibility(View.VISIBLE);
+                                        noteViewHolder.deleteIcon.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Log.d(TAG, "onClick: DeleteButtonPressed");
+                                                deleteNote(notes.get(positionN).getId(), notes.get(positionN).getCategory());
+                                            }
+                                        });
+                                        //noteForDeletion = notes.get(positionN);
+                                        selected = 1;
+                                    }
                                 }else{
                                     noteViewHolder.titleTextView.setTextColor(Color.WHITE);
+                                    noteViewHolder.dateTextView.setTextColor(Color.WHITE);
+                                    noteViewHolder.noteView.setVisibility(View.VISIBLE);
+                                    noteViewHolder.deleteIcon.setVisibility(View.INVISIBLE);
+                                    selected = 0;
+                                    longSelected = true;
                                 }
 
                             }
@@ -195,6 +225,67 @@ public class NotesActivity extends AppCompatActivity{
             }
         };
         recyclerView.setAdapter(adapter);
+    }
+
+    private void deleteNote(final String noteId, String category){
+//        boolean removed = false;
+//        CategoryNotes removeCN = null;
+//        for (CategoryNotes cn : categoryNotes){
+//            if(cn.getCategoryName().equals(category)){
+//                for(Note n : cn.getNotes()){
+//                    if(n.getId().equals(noteId)){
+//                        cn.getNotes().remove(n);
+//                        if(cn.getNotes().isEmpty()){
+//                            removeCN = cn;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        if(removeCN != null){
+//            int position = categoryNotes.indexOf(removeCN);
+//            Log.d(TAG, "deleteNote: itemPosition " + position);
+//            categoryNotes.remove(removeCN);
+//            adapter.notifyItemRemoved(position);
+//            Log.d(TAG, "deleteNote: Category Removed - Size: " + categoryNotes.size());
+//            removed = true;
+//        }
+
+        Log.d(TAG, "deleteNote: DeleteButtonPressed" + noteId);
+
+        refNote.child(noteId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuccess: Note Removed: " + noteId);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: Note not Removed: " + e);
+            }
+        });
+
+        for (Media m : medias){
+            if(m.getNoteId().equals(noteId)){
+                refMedia.child(m.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "deleteNote - Remove Media" + noteId);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "deleteNote: onFailure");
+                    }
+                });
+            }
+        }
+        for (CategoryNotes c : categoryNotes){
+            Log.d(TAG, "deleteNote: Name: " + c.getCategoryName());
+            Log.d(TAG, "deleteNote: Notes: " + c.getNotes().size());
+        }
+
+        //return removed;
     }
 
     private void addNewNote(){
@@ -302,6 +393,7 @@ public class NotesActivity extends AppCompatActivity{
     }
 
     private void startCategories(){
+        categories = new ArrayList<>();
         for (int x=0; x<notes.size();x++){
             if (checkCategories(notes.get(x).getCategory())){
                 categories.add(notes.get(x).getCategory());
