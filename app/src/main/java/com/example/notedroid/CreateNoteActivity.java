@@ -286,6 +286,20 @@ public class CreateNoteActivity extends AppCompatActivity {
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         recyclerView.setLayoutAnimation(animation);
 
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Log.d(TAG, "onClick: ");
+                showImage(position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Log.d(TAG, "onLongClick: ");
+                showImage(position);
+            }
+        }));
+
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -302,17 +316,6 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                showImage(position);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
     }
 
     @Override
@@ -552,8 +555,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
             permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             showImagePicker();
-
-            //
         }
 
     }
