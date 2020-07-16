@@ -153,18 +153,24 @@ public class NotesActivity extends AppCompatActivity{
                     note.setUser(n.getUser());
 
                     if (newText.isEmpty()) {
+                        datesDescending.add(note.getNoteDateToDate());
                         notes.add(note);
                     } else if (n.getTitle().contains(newText) || n.getNote().contains(newText)) {
+                        datesDescending.add(note.getNoteDateToDate());
                         notes.add(note);
                     }
                 }
+
+                Log.d(TAG, "onQueryTextChange notes.size: " + notes.size());
+                Log.d(TAG, "onQueryTextChange allNotes.size: " + allNotes.size());
+
+                typeSorting = "id";
                 startCategoryNotes();
 
                 adapter.notifyDataSetChanged();
                 if (adapterNotes != null) {
                     adapterNotes.notifyDataSetChanged();
                 }
-
                 return false;
             }
         });
