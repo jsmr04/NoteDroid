@@ -7,6 +7,16 @@
         android:icon="@drawable/ic_baseline_more_vert_24"
         app:showAsAction="ifRoom">
         <menu>
+            <item android:id="@+id/notes_sortAlphabetical"
+                android:icon="@drawable/ic_baseline_sort_by_alpha_24"
+                android:title="Sort A to Z"
+                app:showAsAction="ifRoom"/>
+
+            <item android:id="@+id/notes_sortDate"
+                android:icon="@drawable/ic_baseline_date_range_24"
+                android:title="Sort by date"
+                app:showAsAction="ifRoom"/>
+
             <item android:id="@+id/notes_sign_out"
                 android:icon="@drawable/ic_baseline_person_24"
                 android:title="Sign out"

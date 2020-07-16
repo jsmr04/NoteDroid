@@ -1,6 +1,9 @@
 package com.example.notedroid.model;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Note implements Serializable {
 
@@ -49,6 +52,18 @@ public class Note implements Serializable {
 
     public String getNoteDate() {
         return noteDate;
+    }
+
+    public Date getNoteDateToDate() {
+        Date newDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            newDate = format.parse(noteDate);
+            System.out.println(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newDate;
     }
 
     public void setNoteDate(String noteDate) {

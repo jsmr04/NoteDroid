@@ -52,7 +52,7 @@
         android:clickable="true"
         android:layout_gravity="right|bottom"
         app:fabSize="normal"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:src="@drawable/ic_baseline_add_24"/>
 
     <ProgressBar
