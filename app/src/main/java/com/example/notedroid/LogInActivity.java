@@ -146,7 +146,8 @@ public class LogInActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GOOGLE_SIGN_IN ){
+        if (requestCode == GOOGLE_SIGN_IN && resultCode == RESULT_OK){
+            Log.d(TAG, "onActivityResult: " + data.getExtras().toString());
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }

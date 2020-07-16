@@ -19,8 +19,16 @@
             android:background="@color/colorPrimary"
             app:titleTextColor="@android:color/white"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:title=""
-            />
+            app:title="">
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/note_SearchView"
+                android:layout_width="270dp"
+                android:layout_height="wrap_content"
+                style="@style/SearchViewStyle"
+                app:queryHint="Title or note">
+
+            </androidx.appcompat.widget.SearchView>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

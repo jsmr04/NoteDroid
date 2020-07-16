@@ -3,6 +3,7 @@ package com.example.notedroid;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -123,6 +124,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.images_recyclerView);
         rootLayout = findViewById(R.id.cNote_Layout);
 
+
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ImageAdapter(images);
@@ -191,14 +193,11 @@ public class CreateNoteActivity extends AppCompatActivity {
                         recyclerView.setLayoutParams(layoutParams);
                         hiddenKeyboard = true;
                     }
-//                    recyclerView.setVisibility(View.VISIBLE);
-//                    ConstraintSet constraintSet = new ConstraintSet();
-//                    constraintSet.clone(rootLayout);
-//                    constraintSet.connect(R.id.cNoteNoteTextView,ConstraintSet.BOTTOM,R.id.images_recyclerView,ConstraintSet.TOP,0);
-//                    constraintSet.applyTo(rootLayout);
                 }
             }
         });
+
+
     }
 
     private void fillFields() {

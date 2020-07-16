@@ -2,28 +2,25 @@ package com.example.notedroid;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-//import com.example.notedroid.Adapter.CategoryAdapter;
 import com.example.notedroid.Adapter.CategoryViewHolder;
 import com.example.notedroid.Adapter.NoteViewHolder;
 import com.example.notedroid.Interface.NoteOnClickInterface;
@@ -44,20 +41,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.zip.Inflater;
 
-public class NotesActivity extends AppCompatActivity{
+public class NotesActivity extends AppCompatActivity {
     private static final String TAG = "NoteDroid";
     private FloatingActionButton fab;
     private Toolbar toolbar;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
+    private SearchView noteSearchView;
     private RecyclerView.Adapter adapter, adapterNotes;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Note> notes = new ArrayList<>();
+    private ArrayList<Note> allNotes = new ArrayList<>();
     private DatabaseReference refNote, refMedia;
     private FirebaseDatabase database;
     private ArrayList<Media> medias = new ArrayList<>();
@@ -71,8 +69,9 @@ public class NotesActivity extends AppCompatActivity{
     private boolean longSelected = false;
     private Note noteForDeletion;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
 
@@ -80,6 +79,7 @@ public class NotesActivity extends AppCompatActivity{
         toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.notes_recyclerview);
         progressBar = findViewById(R.id.notes_progressBar);
+        noteSearchView = findViewById(R.id.note_SearchView);
 
         user = Util.getPreference(this, "user");
         Log.d(TAG, "onCreate User: " + user);
@@ -113,37 +113,82 @@ public class NotesActivity extends AppCompatActivity{
             }
         });
 
+        Log.d(TAG, "onCreate: Preparing search");
+        EditText editText = noteSearchView.findViewById(R.id.search_src_text);
+        editText.setHintTextColor(Color.WHITE);
+        editText.setTextColor(Color.WHITE);
+
+        noteSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "onQueryTextSubmit: " + query);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "onQueryTextChange: " + newText);
+
+                notes.clear();
+                for (Note n : allNotes) {
+                    Note note = new Note();
+                    note.setId(n.getId());
+                    note.setTitle(n.getTitle());
+                    note.setCategory(n.getCategory());
+                    note.setNote(n.getNote());
+                    note.setNoteDate(n.getNoteDate());
+                    note.setUser(n.getUser());
+
+                    if (newText.isEmpty()) {
+                        notes.add(note);
+                    } else if (n.getTitle().contains(newText) || n.getNote().contains(newText)) {
+                        notes.add(note);
+                    }
+                }
+                startCategoryNotes();
+
+                adapter.notifyDataSetChanged();
+                if (adapterNotes != null) {
+                    adapterNotes.notifyDataSetChanged();
+                }
+
+                return false;
+            }
+        });
+
     }
 
-    private void setupRecyclerView(){
+    private void setupRecyclerView() {
         adapter = new RecyclerView.Adapter<CategoryViewHolder>() {
             @Override
             public void onBindViewHolder(@NonNull CategoryViewHolder categoryViewHolder, final int positionCategory) {
                 categoryViewHolder.categoryName.setText(categoryNotes.get(positionCategory).getCategoryName());
 
-                Log.d("media","mediaCategoryName: " + categoryNotes.get(positionCategory).getCategoryName());
-                Log.d("media","mediaCategoryPosition: " + positionCategory);
+                Log.d("media", "mediaCategoryName: " + categoryNotes.get(positionCategory).getCategoryName());
+                Log.d("media", "mediaCategoryPosition: " + positionCategory);
 
                 adapterNotes = new RecyclerView.Adapter<NoteViewHolder>() {
                     private ArrayList<Note> notes = categoryNotes.get(positionCategory).getNotes();
+
                     @Override
-                    public void onBindViewHolder(@NonNull final NoteViewHolder noteViewHolder,  int positionNote) {
+                    public void onBindViewHolder(@NonNull final NoteViewHolder noteViewHolder, int positionNote) {
                         String image = null;
-                        Log.d("media", "mediaNote: " +  medias.size());
+                        Log.d("media", "mediaNote: " + medias.size());
                         Log.d("media", "mediaNotePosition: " + positionNote);
                         Log.d(TAG, "media: " + notes.get(positionNote).getTitle());
 
-                        for (Media m : medias){
-                            if (m.getType().equals("IMAGE") && m.getNoteId().equals(notes.get(positionNote).getId())){
+                        for (Media m : medias) {
+                            if (m.getType().equals("IMAGE") && m.getNoteId().equals(notes.get(positionNote).getId())) {
                                 Log.d("media", "mediaNoteViewHolderin: " + m.getMedia());
                                 //image = Util.stringToBitMap(m.getMedia());
                                 image = m.getMedia();
                             }
                             Log.d("media", "mediaNoteViewHolderout: " + m.getNoteId() + " NoteID: " + notes.get(positionNote).getId() + " MediaType: " + m.getType());
                         }
-                        if (image == null){
+                        if (image == null) {
                             noteViewHolder.noteImageView.setImageResource(R.mipmap.note_img);
-                        }else{
+                        } else {
                             Bitmap bit;
                             bit = Util.stringToBitMap(image);
                             noteViewHolder.noteImageView.setImageBitmap(bit);
@@ -155,12 +200,12 @@ public class NotesActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View view, boolean isLongPressed) {
                                 Log.d(TAG, "onLongClick: OnClick " + isLongPressed);
-                                if (!isLongPressed && !longSelected){
+                                if (!isLongPressed && !longSelected) {
                                     Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
                                     intent.putExtra("NOTE", notes.get(positionN));
                                     intent.putExtra("MODE", CreateNoteActivity.NOTE_MODE_EDIT);
                                     startActivity(intent);
-                                }else{
+                                } else {
                                     longSelected = false;
                                 }
                             }
@@ -168,8 +213,8 @@ public class NotesActivity extends AppCompatActivity{
                             @Override
                             public void onLongClick(View view, boolean isLongPressed) {
                                 Log.d(TAG, "onLongClick: NotesActivity :" + isLongPressed);
-                                if(isLongPressed){
-                                    if(selected == 0) {
+                                if (isLongPressed) {
+                                    if (selected == 0) {
                                         noteViewHolder.titleTextView.setTextColor(Color.RED);
                                         noteViewHolder.dateTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         noteViewHolder.noteView.setVisibility(View.INVISIBLE);
@@ -184,7 +229,7 @@ public class NotesActivity extends AppCompatActivity{
                                         //noteForDeletion = notes.get(positionN);
                                         selected = 1;
                                     }
-                                }else{
+                                } else {
                                     noteViewHolder.titleTextView.setTextColor(Color.WHITE);
                                     noteViewHolder.dateTextView.setTextColor(Color.WHITE);
                                     noteViewHolder.noteView.setVisibility(View.VISIBLE);
@@ -196,6 +241,7 @@ public class NotesActivity extends AppCompatActivity{
                             }
                         });
                     }
+
                     @NonNull
                     @Override
                     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -207,6 +253,7 @@ public class NotesActivity extends AppCompatActivity{
 
                         return new NoteViewHolder(view);
                     }
+
                     @Override
                     public int getItemCount() {
                         return notes.size();
@@ -215,15 +262,17 @@ public class NotesActivity extends AppCompatActivity{
 
                 categoryViewHolder.category_recyclerView.setAdapter(adapterNotes);
             }
+
             @NonNull
             @Override
             public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 context = parent.getContext();
                 View v1 = LayoutInflater.from(context)
-                        .inflate(R.layout.category_card,parent,false);
+                        .inflate(R.layout.category_card, parent, false);
 
                 return new CategoryViewHolder(v1);
             }
+
             @Override
             public int getItemCount() {
                 Log.d("NoteSize", String.valueOf(categoryNotes.size()));
@@ -234,8 +283,7 @@ public class NotesActivity extends AppCompatActivity{
     }
 
 
-
-    private void deleteNote(final String noteId){
+    private void deleteNote(final String noteId) {
 
         Log.d(TAG, "deleteNote: DeleteButtonPressed" + noteId);
 
@@ -251,8 +299,8 @@ public class NotesActivity extends AppCompatActivity{
             }
         });
 
-        for (Media m : medias){
-            if(m.getNoteId().equals(noteId)){
+        for (Media m : medias) {
+            if (m.getNoteId().equals(noteId)) {
                 refMedia.child(m.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -266,13 +314,13 @@ public class NotesActivity extends AppCompatActivity{
                 });
             }
         }
-        for (CategoryNotes c : categoryNotes){
+        for (CategoryNotes c : categoryNotes) {
             Log.d(TAG, "deleteNote: Name: " + c.getCategoryName());
             Log.d(TAG, "deleteNote: Notes: " + c.getNotes().size());
         }
     }
 
-    private void addNewNote(){
+    private void addNewNote() {
         Intent intent = new Intent(this, CreateNoteActivity.class);
         intent.putExtra("MODE", CreateNoteActivity.NOTE_MODE_CREATE);
         startActivity(intent);
@@ -285,7 +333,7 @@ public class NotesActivity extends AppCompatActivity{
         Log.d(TAG, "onPostResume: ");
     }
 
-    private void getNotesFromFirebase(){
+    private void getNotesFromFirebase() {
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setActivated(true);
         //Get data
@@ -294,18 +342,28 @@ public class NotesActivity extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 notes.clear();
-                for (DataSnapshot noteSnapshot: dataSnapshot.getChildren()) {
+                allNotes.clear();
+                for (DataSnapshot noteSnapshot : dataSnapshot.getChildren()) {
                     Note note = noteSnapshot.getValue(Note.class);
 
-                    if(note.getUser().equals(user)) {
+                    if (note.getUser().equals(user)) {
                         notes.add(note);
                         Log.d(TAG, "note: " + noteSnapshot.getKey() + " Detail: " + note.toString());
+
+                        Note allNote = new Note();
+                        allNote.setId(note.getId());
+                        allNote.setTitle(note.getTitle());
+                        allNote.setCategory(note.getCategory());
+                        allNote.setNote(note.getNote());
+                        allNote.setNoteDate(note.getNoteDate());
+                        allNote.setUser(note.getUser());
+                        allNotes.add(allNote);
                     }
                 }
 
                 startCategoryNotes();
 
-                for (CategoryNotes c : categoryNotes){
+                for (CategoryNotes c : categoryNotes) {
                     Log.d(TAG, "onCreate: " + c.getCategoryName());
 
                 }
@@ -326,7 +384,7 @@ public class NotesActivity extends AppCompatActivity{
         refNote.addValueEventListener(noteListener);
     }
 
-    private void getMediaFromFirebase(){
+    private void getMediaFromFirebase() {
         Query mediaQuery = refMedia;
         //Log.d(TAG, "note id: " + note.getId());
         mediaQuery.addValueEventListener(new ValueEventListener() {
@@ -362,14 +420,14 @@ public class NotesActivity extends AppCompatActivity{
         });
     }
 
-    private void startCategoryNotes(){
+    private void startCategoryNotes() {
         startCategories();
         Log.d("Cat", categories.toString());
         categoryNotes.clear();
-        for(int x=0;x<categories.size();x++){
+        for (int x = 0; x < categories.size(); x++) {
             CategoryNotes cn = new CategoryNotes();
-            for(int y=0; y<notes.size();y++){
-                if(categories.get(x).equals(notes.get(y).getCategory())){
+            for (int y = 0; y < notes.size(); y++) {
+                if (categories.get(x).equals(notes.get(y).getCategory())) {
                     cn.getNotes().add(notes.get(y));
                 }
             }
@@ -379,10 +437,10 @@ public class NotesActivity extends AppCompatActivity{
         }
     }
 
-    private void startCategories(){
+    private void startCategories() {
         categories = new ArrayList<>();
-        for (int x=0; x<notes.size();x++){
-            if (checkCategories(notes.get(x).getCategory())){
+        for (int x = 0; x < notes.size(); x++) {
+            if (checkCategories(notes.get(x).getCategory())) {
                 categories.add(notes.get(x).getCategory());
             }
         }
@@ -390,9 +448,11 @@ public class NotesActivity extends AppCompatActivity{
         Log.d("Cat", categories.toString());
     }
 
-    private boolean checkCategories(String cat){
-        if (categories.isEmpty()){return true;}
-        for(int i=0;i<categories.size();i++) {
+    private boolean checkCategories(String cat) {
+        if (categories.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < categories.size(); i++) {
             if (categories.get(i).equals(cat)) {
                 return false;
             }
@@ -411,7 +471,7 @@ public class NotesActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.notes_sign_out:
                 mAuth.signOut();
                 GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions
@@ -420,14 +480,14 @@ public class NotesActivity extends AppCompatActivity{
                         .requestEmail()
                         .build();
 
-                 GoogleSignIn.getClient(this, googleSignInOptions).signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                     @Override
-                     public void onComplete(@NonNull Task<Void> task) {
-                         Log.d(TAG, "onOptionsItemSelected: Sign Out");
-                         Toast.makeText(getApplicationContext(), "Sign out", Toast.LENGTH_SHORT).show();
-                         finish();
-                     }
-                 });
+                GoogleSignIn.getClient(this, googleSignInOptions).signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onOptionsItemSelected: Sign Out");
+                        Toast.makeText(getApplicationContext(), "Sign out", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
 
                 return true;
             default:
