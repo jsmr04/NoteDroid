@@ -548,6 +548,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            showAudioRecorder();
         } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
             permissionToCamera = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             showImagePicker();

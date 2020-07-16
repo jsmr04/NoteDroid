@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="0.8"
+    android:fitsSystemWindows="true"
     android:background="@drawable/welcome_background"
     tools:context=".MainActivity">
 

@@ -11,8 +11,18 @@
         <!-- Gets rid of the search icon -->
         <item name="searchIcon">@drawable/ic_baseline_search_24</item>
         <!-- Gets rid of the "underline" in the text -->
+<!--        <item name="queryBackground">@color/white</item>-->
         <!-- Gets rid of the search icon when the SearchView is expanded -->
+<!--        <item name="searchHintIcon">@null</item>-->
         <!-- The hint text that appears when the user has not typed anything -->
+    </style>
+    
+    <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+    <style name="AppThemeNoActionBarTransparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
 </resources>

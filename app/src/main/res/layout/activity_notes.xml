@@ -16,15 +16,16 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:titleTextColor="@android:color/white"
+            android:background="@color/colorPrimaryDark"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:title="">
+            app:title=""
+            app:titleTextColor="@android:color/white">
+
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/note_SearchView"
-                android:layout_width="270dp"
-                android:layout_height="wrap_content"
                 style="@style/SearchViewStyle"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
                 app:queryHint="Title or note">
 
             </androidx.appcompat.widget.SearchView>
@@ -36,8 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="10dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

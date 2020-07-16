@@ -13,19 +13,15 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-//import com.example.notedroid.Adapter.CategoryAdapter;
 import com.example.notedroid.Adapter.CategoryViewHolder;
 import com.example.notedroid.Adapter.NoteViewHolder;
 import com.example.notedroid.Interface.NoteOnClickInterface;
@@ -47,12 +43,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.zip.Inflater;
 
 public class NotesActivity extends AppCompatActivity{
     private static final String TAG = "NoteDroid";
@@ -113,9 +106,6 @@ public class NotesActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             setTitle("");
-            //Activando boton back
-            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.);
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +124,6 @@ public class NotesActivity extends AppCompatActivity{
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d(TAG, "onQueryTextSubmit: " + query);
-
                 return false;
             }
 
@@ -407,7 +396,12 @@ public class NotesActivity extends AppCompatActivity{
                 // ...
             }
         };
-        refNote.orderByChild(type).addValueEventListener(noteListener);
+        if (typeSorting.equals("noteDate") || typeSorting.equals("title")){
+            refNote.orderByChild(type).addValueEventListener(noteListener);
+        }
+
+        refNote.addValueEventListener(noteListener);
+
     }
 
     private void getMediaFromFirebase(){

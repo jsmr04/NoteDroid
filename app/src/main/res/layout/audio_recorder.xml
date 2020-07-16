@@ -4,52 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp"
-    android:background="#000000">
+    android:background="#FFFFFF"
+    android:paddingBottom="10dp">
 
     <ImageView
         android:id="@+id/recorderClose_ImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_close_16"
-        android:paddingTop="2dp"
         android:paddingStart="2dp"
-        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
         android:paddingEnd="2dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </ImageView>
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_baseline_close_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/playStop_ImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#000000"
+        android:background="#FFF"
         android:src="@drawable/ic_baseline_mic2_48"
         app:layout_constraintEnd_toStartOf="@id/recording_ImageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recorderClose_ImageView"/>
+        app:layout_constraintTop_toBottomOf="@+id/recorderClose_ImageView" />
 
     <ImageView
         android:id="@+id/addAudio_ImageView"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="#000000"
+        android:background="#FFF"
         android:src="@drawable/ic_baseline_add_circle_48"
-        app:layout_constraintStart_toEndOf="@+id/recording_ImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recorderClose_ImageView"/>
+        app:layout_constraintStart_toEndOf="@+id/recording_ImageView"
+        app:layout_constraintTop_toBottomOf="@+id/recorderClose_ImageView" />
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/recording_ImageView"
         android:layout_width="0in"
         android:layout_height="48dp"
-        android:src="@drawable/audio"
+        android:background="#FFF"
         android:scaleType="centerCrop"
-        android:background="#000000"
+        android:src="@drawable/audio_wave"
         app:layout_constraintEnd_toStartOf="@+id/addAudio_ImageView"
         app:layout_constraintStart_toEndOf="@+id/playStop_ImageView"
-        app:layout_constraintTop_toBottomOf="@+id/recorderClose_ImageView"/>
+        app:layout_constraintTop_toBottomOf="@+id/recorderClose_ImageView" />
     <!--    <ImageView-->
     <!--        android:id="@+id/recording_ImageView"-->
     <!--        android:layout_width="0dp"-->

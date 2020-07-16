@@ -19,7 +19,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -27,20 +27,21 @@
             android:value="@string/map_key">
         </meta-data>
 
-        <activity android:name=".MapActivity"></activity>
-        <activity android:name=".CreateNoteActivity"></activity>
+        <activity android:name=".MapActivity"/>
+        <activity android:name=".CreateNoteActivity"/>
+
         <activity
             android:name=".NotesActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar"/>
         <activity
             android:name=".LogInActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoActionBarTransparent" />
         <activity
             android:name=".SignUpActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoActionBarTransparent" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppThemeNoActionBarTransparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
