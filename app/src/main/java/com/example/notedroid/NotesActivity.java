@@ -155,7 +155,8 @@ public class NotesActivity extends AppCompatActivity{
                     if (newText.isEmpty()) {
                         datesDescending.add(note.getNoteDateToDate());
                         notes.add(note);
-                    } else if (n.getTitle().contains(newText) || n.getNote().contains(newText)) {
+                    } else if (n.getTitle().toUpperCase().contains(newText.toUpperCase())
+                            || n.getNote().toUpperCase().contains(newText.toUpperCase())) {
                         datesDescending.add(note.getNoteDateToDate());
                         notes.add(note);
                     }

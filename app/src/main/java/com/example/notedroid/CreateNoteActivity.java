@@ -197,7 +197,22 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        enablePlayButton();
 
+    }
+
+    private void enablePlayButton(){
+        boolean enable = getAudioIndex() >= 0;
+
+        if(enable){
+            Log.d(TAG, "enablePlayButton: true");
+            playImageView.setImageResource(R.drawable.ic_baseline_play_circle_outline_24);
+            playImageView.setEnabled(true);
+        }else{
+            Log.d(TAG, "enablePlayButton: false");
+            playImageView.setImageResource(R.drawable.ic_baseline_play_circle_outline_24_disabled);
+            playImageView.setEnabled(false);
+        }
     }
 
     private void fillFields() {
@@ -227,6 +242,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                         Log.d(TAG, "onDataChange: " + media.getId());
                     }
                 }
+                enablePlayButton();
                 adapter.notifyDataSetChanged();
             }
 
@@ -746,6 +762,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                         media.setNoteId("");
 
                         medias.add(media);
+
+                        enablePlayButton();
                     }
 
                     alertDialog.dismiss();
