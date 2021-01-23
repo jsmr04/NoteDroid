@@ -9,8 +9,15 @@ NoteDroid is an Android Application which you can create and edit notes. Text, i
 * Sort and filter notes
 * Attach images from gallery and camera
 * Record and play audio
-* Store current location
+* Location tracker
 * Share notes
 
 ## Platform
 * Android
+
+## Backend
+* Firebase's Realtime Database
+* Firebase's Storage
+
+## App Architecture
+* **Patern:** MVC
