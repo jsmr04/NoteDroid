@@ -7,6 +7,7 @@ NoteDroid is an Android Application which you can create and edit notes. Text, i
 * Authentication (Default and Google)
 * Create, remove and edit notes
 * Sort and filter notes
+* Group by category
 * Attach images from gallery and camera
 * Record and play audio
 * Location tracker
@@ -23,3 +24,5 @@ NoteDroid is an Android Application which you can create and edit notes. Text, i
 * **Storage:** Firebase's Firebase
 
 ## Screenshots
+**Authentication**
+<img src="/droidnote-images/main.jpg" width="300" height="600">
