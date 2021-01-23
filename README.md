@@ -11,3 +11,6 @@ NoteDroid is an Android Application which you can create and edit notes. Text, i
 * Record and play audio
 * Store current location
 * Share notes
+
+## Platform
+* Android
