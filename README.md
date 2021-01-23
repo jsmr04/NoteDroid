@@ -25,4 +25,5 @@ NoteDroid is an Android Application which you can create and edit notes. Text, i
 
 ## Screenshots
 **Authentication**
+
 <img src="/droidnote-images/main.jpg" width="300" height="600">
