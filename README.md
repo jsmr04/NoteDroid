@@ -22,7 +22,7 @@ NoteDroid is an Android Application that allows you to create and edit notes. Te
 * **Map:** Google Play Services
 * **Auth:** Google Play Services and Firebase's Authentication
 * **Cloud Database:** Firebase's Realtime Database
-* **Storage:** Firebase's Firebase
+* **Storage:** Firebase's Storage
 
 ## Screenshots
 **Authentication**
