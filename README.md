@@ -1,5 +1,4 @@
 # NoteDroid (iNote)
-This is a college's project for Advanced Android Application Development course. In this project I demonstrated things I learned through the course.
 
 NoteDroid is an Android Application that allows you to create and edit notes. Text, images, and audios are supported.
 
